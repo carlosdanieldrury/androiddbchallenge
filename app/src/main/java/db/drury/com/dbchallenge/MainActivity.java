@@ -1,16 +1,19 @@
 package db.drury.com.dbchallenge;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.google.android.gms.vision.barcode.Barcode;
+
 
 public class MainActivity extends AppCompatActivity {
 
     //Objects
+    private static final int BARCODE_READER_REQUEST_CODE = 100;
 
     private BootstrapButton buttonGetKey;
     private BootstrapButton buttonDeleteData;
@@ -21,7 +24,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initialize();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == BARCODE_READER_REQUEST_CODE && resultCode == RESULT_OK){
+            if(data != null){
+                final Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+                textViewTokenInfo.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewTokenInfo.setText(barcode.displayValue);
+                    }
+                });
+            }
+        }
     }
 
     public void initialize() {
@@ -29,13 +48,14 @@ public class MainActivity extends AppCompatActivity {
         // object references
         buttonGetKey = (BootstrapButton) findViewById(R.id.buttonGetKey);
         buttonDeleteData = (BootstrapButton) findViewById(R.id.buttonDeleteData);
+        textViewTokenInfo = (TextView) findViewById(R.id.textViewTokenLabel);
 
         // onClickListeners
         View.OnClickListener buttonGetKeyListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
-
+                Intent intent = new Intent(getApplicationContext(), BarcodeCaptureActivity.class);
+                startActivityForResult(intent, BARCODE_READER_REQUEST_CODE);
             }
         };
 
