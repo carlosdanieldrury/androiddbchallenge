@@ -43,8 +43,17 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
+        android:id="@+id/textViewTOTPLabel"
+        android:fontFamily="monospace"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
         android:id="@+id/textViewTokenLabel"
         android:fontFamily="sans-serif"
-        android:textSize="8sp"/>
+        android:textSize="14sp"/>
 
 </LinearLayout>
