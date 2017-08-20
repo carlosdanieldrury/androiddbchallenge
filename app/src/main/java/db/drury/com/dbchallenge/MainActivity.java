@@ -12,8 +12,16 @@ import com.google.android.gms.vision.barcode.Barcode;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Link to native Lib wrote in C
+    static {
+        System.loadLibrary("otpjni");
+    }
+
     //Objects
     private static final int BARCODE_READER_REQUEST_CODE = 100;
+
+    // key to be tested
+    private String key = "QYDVQQLEwpUZWNoIERlcHQuMSgwJgYDV";
 
     private BootstrapButton buttonGetKey;
     private BootstrapButton buttonDeleteData;
@@ -25,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initialize();
+
+        // testing key to the native lib
+        textViewTokenInfo.setText(generateOtp(key).toString());
 
     }
 
@@ -42,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    // a interface to the native code
+    public static native byte[] generateOtp(String key);
 
     public void initialize() {
 
