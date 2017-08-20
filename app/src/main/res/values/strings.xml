@@ -4,8 +4,6 @@
     <string name="delete_data_button_string">Delete Data</string>
     <string name="token_label">Token Info</string>
     <string name="ok">OK</string>
-    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
-    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="label_otp">OTP Result:</string>
     <string name="detector_error">Sorry, something went wrong with the barcode detector</string>
 </resources>

@@ -39,13 +39,24 @@
         />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:layout_gravity="center_horizontal"
+        android:id="@+id/textViewLabelOTPResult"
+        android:text="@string/label_otp"
+        />
+
+
+    <com.beardedhen.androidbootstrap.BootstrapLabel
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:bootstrapBrand="primary"
         android:id="@+id/textViewTOTPLabel"
-        android:fontFamily="monospace"
-        android:textSize="16sp"/>
+        app:bootstrapHeading="h3"
+        app:roundedCorners="false"
+        />
+
 
     <TextView
         android:layout_width="match_parent"

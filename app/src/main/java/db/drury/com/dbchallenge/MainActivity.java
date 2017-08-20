@@ -5,11 +5,12 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapLabel;
+import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import org.json.JSONException;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     // Keep save data
     private SharedPreferences prefs;
     private boolean dataStored = false;
-    
+
     private String prefsKey = "qrcode";
     private String resultOTP;
 
@@ -39,13 +40,14 @@ public class MainActivity extends AppCompatActivity {
     private BootstrapButton buttonGetKey;
     private BootstrapButton buttonDeleteData;
     private TextView textViewTokenInfo;
-    private TextView textViewTOTPLabel;
+    private BootstrapLabel textViewTOTPLabel;
+    private TextView textViewLabelOTPResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        TypefaceProvider.registerDefaultIconSets();
         initialize();
 
     }
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
     public void changeButtonsVisibility() {
         buttonGetKey.setVisibility(dataStored ? View.INVISIBLE : View.VISIBLE);
         buttonDeleteData.setVisibility(dataStored ? View.VISIBLE : View.INVISIBLE);
+        textViewLabelOTPResult.setVisibility(dataStored ? View.VISIBLE : View.INVISIBLE);
 
         if (!dataStored) {
             textViewTOTPLabel.setText("");
@@ -164,17 +167,17 @@ public class MainActivity extends AppCompatActivity {
         prefs = this.getPreferences(MODE_PRIVATE);
         resultOTP = getValueFromPrefs(prefsKey);
 
-        if (resultOTP != null && resultOTP != "") {
-            dataStored = true;
-        }
-
-
         // object references
         buttonGetKey = (BootstrapButton) findViewById(R.id.buttonGetKey);
         buttonDeleteData = (BootstrapButton) findViewById(R.id.buttonDeleteData);
-        textViewTOTPLabel = (TextView) findViewById(R.id.textViewTOTPLabel);
+        textViewTOTPLabel = (BootstrapLabel) findViewById(R.id.textViewTOTPLabel);
         textViewTokenInfo = (TextView) findViewById(R.id.textViewTokenLabel);
+        textViewLabelOTPResult = (TextView) findViewById(R.id.textViewLabelOTPResult);
 
+        if (resultOTP != null && resultOTP != "") {
+            dataStored = true;
+            textViewTOTPLabel.setText(resultOTP);
+        }
         // Change visibility of buttons
         changeButtonsVisibility();
 
