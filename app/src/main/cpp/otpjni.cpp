@@ -8,7 +8,7 @@
 
 
 extern "C" JNIEXPORT jbyteArray JNICALL
-Java_db_drury_com_dbchallenge_MainActivity_generateOtp(JNIEnv *env, jobject thiz, jstring key) {
+Java_db_drury_com_dbchallenge_OTPHandler_generateOtp(JNIEnv *env, jobject thiz, jstring key) {
 
     const char *constKeyLocal = env->GetStringUTFChars(key, 0);
     char* keyLocal = (char*)constKeyLocal;

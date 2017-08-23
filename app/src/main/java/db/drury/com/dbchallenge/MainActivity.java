@@ -21,10 +21,6 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Link to native Lib wrote in C
-    static {
-        System.loadLibrary("otpjni");
-    }
 
     //Objects
     private static final int BARCODE_READER_REQUEST_CODE = 100;
@@ -64,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jObj = new JSONObject(barcode.rawValue);
                             String key = jObj.getString("key");
                             // calls native code
-                            byte[] otp = generateOtp(key);
-                            resultOTP = getTokenOTP6Digits(otp);
+                            byte[] otp = OTPHandler.generateOtp(key);
+                            resultOTP = OTPHandler.getTokenOTP6Digits(otp);
                             textViewTOTPLabel.setText(resultOTP);
                             saveKey(resultOTP);
                             textViewTokenInfo.setText(barcode.displayValue);
@@ -79,39 +75,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // get the byte[] from generateOtp method and returns a String with the result of 6 digits
-    public String getTokenOTP6Digits(byte[] dbc) {
-        String res = "";
-        if (dbc != null) {
-            byte[] dbc1 = Arrays.copyOfRange(dbc, 9, 13);
-            String aux = toHexadecimal(dbc1);
-            long decimalValue = Long.parseLong(aux, 16);
-            String decimalValueString = Long.toString(decimalValue);
-            int decimalValueStringSize = decimalValueString.length();
-            res = decimalValueString.substring(decimalValueStringSize-6, decimalValueStringSize);
-        }
-
-        return res;
-    }
-
-
-    // converts the byte[] to hex string
-    private String toHexadecimal(byte[] digest){
-        String hash = "";
-        for(byte aux : digest) {
-            int b = aux & 0xff;
-            if (Integer.toHexString(b).length() == 1) hash += "0";
-            hash += Integer.toHexString(b);
-        }
-        return hash;
-    }
-
     // save data on prefs
     public void saveKey(String tokenKey) {
         if (prefs == null)
             prefs = this.getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(prefsKey, encrypt(tokenKey));
+        editor.putString(prefsKey, OTPHandler.encrypt(tokenKey));
         editor.commit();
         dataStored = true;
         changeButtonsVisibility();
@@ -135,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             prefs = this.getPreferences(MODE_PRIVATE);
         String result = prefs.getString(tokenKey, "");
         if (result != "")
-            result = decrypt(result);
+            result = OTPHandler.decrypt(result);
         return result;
     }
 
@@ -150,16 +119,6 @@ public class MainActivity extends AppCompatActivity {
         changeButtonsVisibility();
     }
 
-    public static String encrypt(String input) {
-        return Base64.encodeToString(input.getBytes(), Base64.DEFAULT);
-    }
-
-    public static String decrypt(String input) {
-        return new String(Base64.decode(input, Base64.DEFAULT));
-    }
-
-    // a interface to the native code
-    public static native byte[] generateOtp(String key);
 
 
     public void initialize() {
