@@ -1,5 +1,6 @@
 package db.drury.com.dbchallenge;
 
+import android.content.SharedPreferences;
 import android.util.Base64;
 
 import java.util.Arrays;
@@ -18,12 +19,11 @@ public class OTPHandler {
     // a interface to the native code
     public static native byte[] generateOtp(String key);
 
-
     // get the byte[] from generateOtp method and returns a String with the result of 6 digits
     public static String getTokenOTP6Digits(byte[] dbc) {
         String res = "";
         if (dbc != null) {
-            byte[] dbc1 = Arrays.copyOfRange(dbc, 9, 13);
+            byte[] dbc1 = Arrays.copyOfRange(dbc, 10, 14);
             String aux = toHexadecimal(dbc1);
             long decimalValue = Long.parseLong(aux, 16);
             String decimalValueString = Long.toString(decimalValue);

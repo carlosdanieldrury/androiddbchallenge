@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:preference="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditTextPreference
+        android:defaultValue="30"
+        android:dialogTitle="@string/pref_time_period"
+        android:inputType="number"
+        android:key="pref_time"
+        android:summary="@string/pref_time_period_summ"
+        android:title="@string/pref_time_period_title" />
+
+</PreferenceScreen>

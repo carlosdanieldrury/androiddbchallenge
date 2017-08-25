@@ -21,6 +21,11 @@
         <activity
             android:name=".BarcodeCaptureActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity
+            android:name=".PreferencesActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <service android:name=".BroadcastService">
+        </service>
     </application>
 
 </manifest>
