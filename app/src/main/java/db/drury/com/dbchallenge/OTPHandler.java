@@ -1,6 +1,5 @@
 package db.drury.com.dbchallenge;
 
-import android.content.SharedPreferences;
 import android.util.Base64;
 
 import java.util.Arrays;

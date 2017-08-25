@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public static String prefsPeriodUpdateOTP = "pref_time";
 
     private int periodUpdateOTP;
+    private SharedPreferences sharedPreferences;
 
     //internal Service
     public static final String mBroadcastStringAction = "db.drury.com.dbchallenge.broadcast.String";
@@ -72,8 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        setPeriodUpdateOTP(Integer.parseInt(preferences.getString(prefsPeriodUpdateOTP, "30")));
+        // After choosing the period of updating OTP on PreferencesActivity, onResume is called
+
+
+        periodUpdateOTP = Integer.parseInt(sharedPreferences.getString(prefsPeriodUpdateOTP, "30"));
         resultQRCode = getValueFromPrefs(prefsQRCode);
         registerReceiver(mReceiver, mIntentFilter);
         if (resultQRCode != "") {
@@ -180,10 +183,6 @@ public class MainActivity extends AppCompatActivity {
         changeButtonsVisibility();
     }
 
-    public void setPeriodUpdateOTP(int value) {
-        periodUpdateOTP = value;
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -212,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
         resultQRCode = getValueFromPrefs(prefsQRCode);
         String valueFromPrefsForPeriodUpdateOTP = getValueFromPrefs(prefsPeriodUpdateOTP);
         periodUpdateOTP = Integer.parseInt(valueFromPrefsForPeriodUpdateOTP != "" ? valueFromPrefsForPeriodUpdateOTP : "30" );
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
 
         // object references
@@ -274,15 +274,14 @@ public class MainActivity extends AppCompatActivity {
 
                 if (intent.getAction().equals(mBroadcastStringAction)) {
                     String value = intent.getStringExtra("Data");
-                    //Toast.makeText(MainActivity.this, "Data " +  value, Toast.LENGTH_LONG ).show();
-                    Log.i(BroadcastService.LOG_TAG, "Value from receiver: " + value);
+                    //Log.i(BroadcastService.LOG_TAG, "Value from receiver: " + value);
                     if (resultQRCode != "") {
                         setKeyOnView(value);
                     }
                 }
-            Intent stopIntent = new Intent(MainActivity.this,
-                    BroadcastService.class);
-            stopService(stopIntent);
+                Intent stopIntent = new Intent(MainActivity.this,
+                        BroadcastService.class);
+                stopService(stopIntent);
 
             }
     };

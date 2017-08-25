@@ -1,12 +1,10 @@
 package db.drury.com.dbchallenge;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+
 
 /**
  * Created by carlos.drury on 23/08/2017.
