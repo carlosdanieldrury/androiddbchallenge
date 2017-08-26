@@ -15,6 +15,7 @@ public class OTPHandler {
         System.loadLibrary("otpjni");
     }
 
+
     // a interface to the native code
     public static native byte[] generateOtp(String key);
 

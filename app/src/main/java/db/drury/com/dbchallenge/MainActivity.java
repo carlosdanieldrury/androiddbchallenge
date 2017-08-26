@@ -17,7 +17,9 @@ import android.widget.TextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapLabel;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
+import com.facebook.crypto.CryptoConfig;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.zeroone.conceal.ConcealPrefRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter mIntentFilter;
 
     // Keep save data
-    private SharedPreferences prefs;
+    private ConcealPrefRepository concealPrefRepository;
     private boolean dataStored = false;
 
     private String prefsKey = "qrcodekey";
@@ -74,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         // After choosing the period of updating OTP on PreferencesActivity, onResume is called
-
 
         periodUpdateOTP = Integer.parseInt(sharedPreferences.getString(prefsPeriodUpdateOTP, "30"));
         resultQRCode = getValueFromPrefs(prefsQRCode);
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         return "";
     }
 
@@ -135,11 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
     // save data on prefs
     public void saveDataOnPref(String prefCode ,  String token) {
-        if (prefs == null)
-            prefs = this.getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(prefCode, OTPHandler.encrypt(token));
-        editor.commit();
+        concealPrefRepository.putString(prefCode,token);
         dataStored = true;
         changeButtonsVisibility();
     }
@@ -159,20 +157,12 @@ public class MainActivity extends AppCompatActivity {
 
     // get the value from Preferences
     public String getValueFromPrefs(String key) {
-        if (prefs == null)
-            prefs = this.getPreferences(MODE_PRIVATE);
-        String result = prefs.getString(key, "");
-        if (result != "")
-            result = OTPHandler.decrypt(result);
-        return result;
+        String result = concealPrefRepository.getString(key, "");
+        return result != null ? result : "";
     }
 
     public void deletePrefs(String tokenKey) {
-        if (prefs == null)
-            prefs = this.getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.remove(tokenKey);
-        editor.commit();
+        concealPrefRepository.remove(tokenKey);
         resultOTP = "";
         resultQRCode = "";
         dataStored = false;
@@ -206,11 +196,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void initialize() {
 
-        prefs = this.getPreferences(MODE_PRIVATE);
+        // Secured Shared Preferences
+        concealPrefRepository = new ConcealPrefRepository.PreferencesBuilder(this)
+                .useDefaultPrefStorage()
+                .sharedPrefsBackedKeyChain(CryptoConfig.KEY_256)  //CryptoConfig.KEY_256 or CryptoConfig.KEY_128
+                .enableCrypto(true,true) //param 1 - enable value encryption , param 2 - enable key encryption
+                .create();
+
         resultOTP = getValueFromPrefs(prefsKey);
         resultQRCode = getValueFromPrefs(prefsQRCode);
-        String valueFromPrefsForPeriodUpdateOTP = getValueFromPrefs(prefsPeriodUpdateOTP);
-        periodUpdateOTP = Integer.parseInt(valueFromPrefsForPeriodUpdateOTP != "" ? valueFromPrefsForPeriodUpdateOTP : "30" );
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
 
@@ -249,7 +243,6 @@ public class MainActivity extends AppCompatActivity {
 
         buttonGetKey.setOnClickListener(buttonGetKeyListener);
         buttonDeleteData.setOnClickListener(buttonDeleteDataListener);
-
 
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(mBroadcastStringAction);
